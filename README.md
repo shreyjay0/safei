@@ -7,9 +7,9 @@ Safei cares about your eyes!
 
 ## Use:
 
-We often work non stop and keep staring at our screens for hours, it not only strains our eyes but affects our health in the long run. So to help us with this, Safei reminds us to take break and dims the screen until the set time forcing us to go away for a while. This not only relaxes our eye but also helps us change our posture which 
+We often work non-stop and keep staring at our screens for hours, it not only strains our eyes but affects our health in the long run. So to help us with this, Safei reminds us to take a break and dims the screen until the set time, forcing us to go away for a while. This not only relaxes our eye, but also helps us change our posture. 
 
-But safei never wants you to lose your progress, so it allows multiple extensions just in case the work that's being done is urgent and needs to be done in time anyhow. 
+But Safei never wants you to lose your progress, so it allows multiple extensions, just in case the work that's being done is urgent and needs to be completed in time anyhow. 
 
 ## Configuration
 
@@ -21,6 +21,8 @@ Safei requires user to set:
 
 ## Upcoming
 
-- Support for linux
-
 - Skip a break if the user goes for extension thrice
+
+- Water reminder
+
+- Support for linux
