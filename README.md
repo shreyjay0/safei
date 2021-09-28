@@ -21,7 +21,7 @@ Safei requires user to set:
 
 ## Upcoming
 
-- Skip a break if the user goes for extension thrice
+- [x] Skip a break if the user goes for extension thrice
 
 - Water reminder
 
