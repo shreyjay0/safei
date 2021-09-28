@@ -1,11 +1,12 @@
-from contextlib import ExitStack
 import os,time,sys
+from tkinter import Message
 import pyautogui
 import wmi
 import win32gui, win32con
 import ctypes
 import threading
 import tkinter.simpledialog, winsound
+from win10toast import ToastNotifier as toast
 
 def linux_light_off():
     #xset dpms force off
@@ -19,6 +20,10 @@ def reminder(reminder, title):
     winsound.PlaySound("*",winsound.SND_ALIAS)
     return ctypes.windll.user32.MessageBoxW(0, reminder, title,1)
 
+def notification(title, notif_msg, t):
+    notif = toast()
+    notif.show(title, notif_msg, t)
+
 def wait_for_ten_minutes():
     pass
 
@@ -28,7 +33,8 @@ def wmlib():
 def current_brightness():
     return wmlib().WmiMonitorBrightness()[0].CurrentBrightness
 
-def waiting_period(now, t):
+def waiting_period(t):
+    now = get_time()
     while get_time() - now < t:
         turn_off()
         pyautogui.moveTo(2,2)
@@ -69,10 +75,13 @@ def end_protection(brightness_start, brightness_mid):
 
 def main_win(t):
     b_start, b_end = start_protection()
-    now = get_time()
+    print("turning off")
+    # notification("METIME 😎 - SAFEI 😊","Dimming lights now! Get rest.",10)
     turn_off()
+    waiting_period(t)
     turn_on()
-    print("running end")
+    # notification("METIME over 😁 - SAFEI 😊","Dimming lights now! Get rest.",10)
+    print("System is now open to use")
     end_protection(b_start, b_end)
 
 # using threading
@@ -105,14 +114,22 @@ def check_time(input):
 def main_lin():
     pass
 
-def main_run(breaks):
+def start_config(breaks):
+    extend_req_count = 0
     #10 minute reminder
     while reminder("This is a reminder to tell you that the screen would be blackened out in 10 minutes. Please make sure you complete your tasks quickly and get it ready to save if it's urgent. We'll send you another notification in another 8 minutes. \n\nPress cancel if you'd like to extend the timing for the start of MeTime by 10 minutes", "METIME 😎 REMINDER - SAFEI 😊") != 1: #rejects
+        extend_req_count += 1
         wait(10)
-    wait(5) #after acceptance
-    while reminder("This is a final reminder to tell you that the screen would be blackened out in another 2 minutes. It is advised to minimise all tabs before the MeTime starts. Please make sure you're ready to stop for a while you take rest. Also, you should save it if it's urgent. \n\nPress cancel if you'd like to extend the timing for the start of MeTime by another 5 minutes. Take rest!", "URGENT REMINDER - SAFEI 😊") != 1:
-        wait(5) #rejection
-    main_win(breaks) #acceptance
+        if extend_req_count == 3:
+            break
+    if extend_req_count < 3:
+        wait(5) #after acceptance
+        while reminder("This is a final reminder to tell you that the screen would be blackened out in another 2 minutes. It is advised to minimise all tabs before the MeTime starts. Please make sure you're ready to stop for a while you take rest. Also, you should save it if it's urgent. \n\nPress cancel if you'd like to extend the timing for the start of MeTime by another 5 minutes. Take rest!", "URGENT REMINDER - SAFEI 😊") != 1:
+            extend_req_count += 1
+            wait(5) #rejection
+            if extend_req_count == 3:
+                break
+        if extend_req_count < 3: main_win(breaks) #acceptance
 
 
 if sys.platform[:3] == "win":
@@ -126,9 +143,10 @@ if sys.platform[:3] == "win":
         breaks = get_input_to_setup("Setup - SAFEI 😊", "What is your preferred break duration? (in minutes)")
     if not breaks:
         exit()
+    go = True
     while True:
-        wait(20)
-        main_run(breaks)
+        wait(interval)
+        start_config(breaks)
 
 elif sys.platform[:5] == "linux": 
     main_lin()
